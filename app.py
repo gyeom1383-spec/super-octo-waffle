@@ -1,11 +1,10 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
 st.set_page_config(page_title="국어 서술형 답안 연습", page_icon="✏️")
 
 # Gemini API 설정
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
 st.title("✏️ 국어 서술형 답안 연습")
 st.caption("답안을 작성한 뒤 제출하면 AI 피드백을 받을 수 있어요.")
@@ -60,7 +59,10 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 - 친절한 존댓말 사용
 - 정답/오답을 직접 언급하지 말고 방향을 안내하는 방식으로"""
 
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=prompt
+        )
         feedback = response.text
 
     st.success("✅ 피드백")
