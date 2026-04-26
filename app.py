@@ -5,7 +5,7 @@ st.set_page_config(page_title="국어 서술형 답안 연습", page_icon="✏�
 
 # Gemini API 설정
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 st.title("✏️ 국어 서술형 답안 연습")
 st.caption("답안을 작성한 뒤 제출하면 AI 피드백을 받을 수 있어요.")
