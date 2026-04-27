@@ -66,4 +66,3 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 
     st.success("✅ 피드백")
     st.markdown(feedback)
-```
