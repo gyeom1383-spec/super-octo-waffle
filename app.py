@@ -1,36 +1,7 @@
 import streamlit as st
 import requests
 
-st.set_page_config(page_title="국어 서술형 답안 연습", page_icon="✏️")
-
-st.title("✏️ 국어 서술형 답안 연습")
-st.caption("답안을 작성한 뒤 제출하면 AI 피드백을 받을 수 있어요.")
-
-st.divider()
-
-st.markdown("#### 문제")
-st.markdown(
-    """다음 장면에서 밑줄 친 소재가 의미하는 바를 작성하시오.
-
----
-
-> 그러다가 소녀가 물속에서 무엇을 하나 집어낸다. 하얀 조약돌이었다. 그러고는 벌떡 일어나 팔짝팔짝 징검다리를 뛰어 건너간다.  
-> 다 건너가더니 홱 이리로 돌아서며,  
-> "이 바보."  
-> **조약돌**이 날아왔다.  
-> 소년은 저도 모르게 벌떡 일어났다.
-"""
-)
-
-st.info("💡 힌트: 교과서 27~28페이지를 확인하세요.")
-
-st.divider()
-
-answer = st.text_area(
-    "📝 내 답안",
-    placeholder="이 장면에서 조약돌은 ~ 을/를 의미한다.",
-    height=120,
-)
+st.set_page_config(page_title="국어 서술형 답안 연습", page_icon="✏️", layout="centered")
 
 SONAGI = """
 소년은 개울가에서 소녀를 보자 곧 윤 초시네 증손녀딸이라는 걸 알 수 있었다. 소녀는 개울에다 손을 잠그고 물장난을 하고 있는 것이다. 서울서는 이런 개울물을 보지 못하기나 한 듯이.
@@ -46,10 +17,8 @@ SONAGI = """
 다 건너가더니 홱 이리로 돌아서며,
 "이 바보."
 조약돌이 날아왔다.
-소년은 저도 모르게 벌떡 일어났다.
+소년은 저도 모르게 벌떡 일어섰다.
 단발머리를 나풀거리며 소녀가 막 달린다. 갈밭 사잇길로 들어섰다. 뒤에는 청량한 가을 햇살 아래 빛나는 갈꽃뿐.
-이제 저쯤 갈밭머리로 소녀가 나타나리라. 꽤 오랜 시간이 지났다고 생각했다. 그런데도 소녀는 나타나지 않는다. 발돋움을 했다. 그러고도 상당한 시간이 지났다고 생각됐다.
-저쪽 갈밭머리에 갈꽃이 한 옴큼 움직였다. 소녀가 갈꽃을 안고 있었다. 그리고 이제는 천천한 걸음이었다. 유난히 맑은 가을 햇살이 소녀의 갈꽃머리에서 반짝거렸다. 소녀 아닌 갈꽃이 들길을 걸어가는 것만 같았다.
 소년은 이 갈꽃이 아주 뵈지 않게 되기까지 그대로 서 있었다. 문득 소녀가 던진 조약돌을 내려다보았다. 물기가 걷혀 있었다. 소년은 조약돌을 집어 주머니에 넣었다.
 
 다음 날부터 좀 더 늦게 개울가로 나왔다. 소녀의 그림자가 뵈지 않았다. 다행이었다.
@@ -61,29 +30,18 @@ SONAGI = """
 
 토요일이었다.
 개울가에 이르니 며칠째 보이지 않던 소녀가 건너편 가에 앉아 물장난을 하고 있었다.
-모르는 체 징검다리를 건너기 시작했다. 얼마 전에 소녀 앞에서 한 번 실수를 했을 뿐, 여태 큰길 가듯이 건너던 징검다리를 오늘은 조심성스럽게 건넌다.
-"얘."
-못 들은 체했다. 둑 위로 올라섰다.
-"얘, 이게 무슨 조개지?"
-자기도 모르게 돌아섰다. 소녀의 맑고 검은 눈과 마주쳤다. 얼른 소녀의 손바닥으로 눈을 떨구었다.
+모르는 체 징검다리를 건너기 시작했다. 소녀의 맑고 검은 눈과 마주쳤다.
 "비단조개."
 "이름두 참 곱다."
-갈림길에 왔다. 여기서 소녀는 아래편으로 한 삼 마장쯤, 소년은 우대로 한 십 리 가까잇길을 가야 한다.
+갈림길에 왔다.
 소녀가 걸음을 멈추며,
 "너, 저 산 너머에 가 본 일 있니?"
-벌 끝을 가리켰다.
-"없다."
 "우리, 가 보지 않을래? 시골 오니까 혼자서 심심해 못 견디겠다."
-"저래 봬두 멀다."
-"멀믄 얼마나 멀갔게? 서울 있을 땐 아주 먼 데까지 소풍 갔었다."
-소녀의 눈이 금세, 바보, 바보, 할 것만 같았다.
 논 사잇길로 들어섰다. 벼 가을걷이하는 곁을 지났다.
-허수아비가 서 있었다. 소년이 새끼줄을 흔들었다. 참새가 몇 마리 날아간다.
 "아, 재밌다!"
 소녀가 허수아비 줄을 잡더니 흔들어 댄다. 소녀의 왼쪽 볼에 살포시 보조개가 패었다.
-저만치 허수아비가 또 서 있다. 소녀가 그리로 달려간다. 그 뒤를 소년도 달렸다.
 논이 끝난 곳에 도랑이 하나 있었다. 소녀가 먼저 뛰어 건넜다.
-소년이 참외 그루에 심은 무밭으로 들어가, 무 두 밑을 뽑아 왔다. 소녀에게 한 밑 건넨다.
+소년이 무밭으로 들어가, 무 두 밑을 뽑아 왔다. 소녀에게 한 밑 건넨다.
 소녀도 따라 했다. 그러나 세 입도 못 먹고,
 "아, 맵고 지려."
 하며 집어 던지고 만다.
@@ -122,26 +80,165 @@ SONAGI = """
 "그렇지. 이번 앤 꽤 여러 날 앓는 걸 약두 변변히 못 써 봤다더군. 지금 같애서는 윤 초시네두 대가 끊긴 셈이지……. 그런데 참 이번 계집애는 어린것이 여간 잔망스럽지가 않어. 글쎄 죽기 전에 이런 말을 했다지 않어? 자기가 죽거든 자기 입던 옷을 꼭 그대루 입혀서 묻어 달라구……."
 """
 
-if st.button("제출하기", type="primary", disabled=not answer.strip()):
-    with st.spinner("AI가 피드백을 작성 중입니다..."):
+# ── 문항 데이터 (나중에 내용 채워넣기) ──────────────────────────
+QUESTIONS = [
+    {
+        "id": 1,
+        "tag": "소재의 상징",
+        "excerpt": """그러다가 소녀가 물속에서 무엇을 하나 집어낸다. 하얀 조약돌이었다. 그러고는 벌떡 일어나 팔짝팔짝 징검다리를 뛰어 건너간다.
+다 건너가더니 홱 이리로 돌아서며,
+"이 바보."
+**조약돌**이 날아왔다.
+소년은 저도 모르게 벌떡 일어났다.""",
+        "question": "다음 장면에서 밑줄 친 소재가 의미하는 바를 작성하시오.",
+        "hint": "교과서 27~28페이지를 확인하세요.",
+        "placeholder": "조약돌은 [누가] [누구에게] 느끼는 [감정/마음]을 상징한다.",
+        "answer_frame": "조약돌은 [누가] [누구에게] 느끼는 [감정/마음]을 상징한다.",
+        "key_answer": "조약돌은 소녀가 소년에게 보내는 관심, 호감, 애정을 상징함. 소년이 조약돌을 주머니에 넣고 소중히 간직하는 장면과 연결됨.",
+    },
+    {
+        "id": 2,
+        "tag": "인물의 심리",
+        "excerpt": "※ 문항 준비 중입니다.",
+        "question": "※ 문항 준비 중입니다.",
+        "hint": "교과서 xx페이지를 확인하세요.",
+        "placeholder": "답안을 입력하세요.",
+        "answer_frame": "",
+        "key_answer": "",
+    },
+    {
+        "id": 3,
+        "tag": "인물의 심리",
+        "excerpt": "※ 문항 준비 중입니다.",
+        "question": "※ 문항 준비 중입니다.",
+        "hint": "교과서 xx페이지를 확인하세요.",
+        "placeholder": "답안을 입력하세요.",
+        "answer_frame": "",
+        "key_answer": "",
+    },
+    {
+        "id": 4,
+        "tag": "서술 방식",
+        "excerpt": "※ 문항 준비 중입니다.",
+        "question": "※ 문항 준비 중입니다.",
+        "hint": "교과서 xx페이지를 확인하세요.",
+        "placeholder": "답안을 입력하세요.",
+        "answer_frame": "",
+        "key_answer": "",
+    },
+    {
+        "id": 5,
+        "tag": "배경의 기능",
+        "excerpt": "※ 문항 준비 중입니다.",
+        "question": "※ 문항 준비 중입니다.",
+        "hint": "교과서 xx페이지를 확인하세요.",
+        "placeholder": "답안을 입력하세요.",
+        "answer_frame": "",
+        "key_answer": "",
+    },
+    {
+        "id": 6,
+        "tag": "주제 파악",
+        "excerpt": "※ 문항 준비 중입니다.",
+        "question": "※ 문항 준비 중입니다.",
+        "hint": "교과서 xx페이지를 확인하세요.",
+        "placeholder": "답안을 입력하세요.",
+        "answer_frame": "",
+        "key_answer": "",
+    },
+]
 
-        prompt = f"""당신은 중학교 1학년 국어 교사입니다. 아래는 황순원의 단편소설 「소나기」 전문입니다. 이 작품을 완전히 숙지한 후 학생의 서술형 답안에 피드백을 작성해 주세요.
+# ── 세션 상태 초기화 ─────────────────────────────────────────────
+if "page" not in st.session_state:
+    st.session_state.page = "main"
+if "current_q" not in st.session_state:
+    st.session_state.current_q = None
+if "completed" not in st.session_state:
+    st.session_state.completed = set()
+if "feedbacks" not in st.session_state:
+    st.session_state.feedbacks = {}
+
+# ── 메인 화면 ────────────────────────────────────────────────────
+def show_main():
+    st.title("✏️ 국어 서술형 답안 연습")
+    st.caption("황순원, 「소나기」 | 문항을 선택해 답안을 작성하고 AI 피드백을 받아보세요.")
+    st.divider()
+
+    completed_count = len(st.session_state.completed)
+    st.markdown(f"**진행 현황: {completed_count} / {len(QUESTIONS)} 문항 완료**")
+    st.progress(completed_count / len(QUESTIONS))
+    st.divider()
+
+    cols = st.columns(2)
+    for i, q in enumerate(QUESTIONS):
+        col = cols[i % 2]
+        with col:
+            is_done = q["id"] in st.session_state.completed
+            label = f"{'✅ ' if is_done else ''}{q['id']}번 | {q['tag']}"
+            if st.button(label, key=f"q_{q['id']}", use_container_width=True):
+                st.session_state.current_q = q["id"]
+                st.session_state.page = "question"
+                st.rerun()
+
+# ── 문항 화면 ────────────────────────────────────────────────────
+def show_question(q):
+    if st.button("← 목록으로 돌아가기"):
+        st.session_state.page = "main"
+        st.rerun()
+
+    st.divider()
+    st.markdown(f"### {q['id']}번 문항 | {q['tag']}")
+    st.markdown(f"**{q['question']}**")
+    st.divider()
+
+    if q["excerpt"] != "※ 문항 준비 중입니다.":
+        st.markdown(f"> {q['excerpt'].replace(chr(10), chr(10)+'> ')}")
+    else:
+        st.info("※ 이 문항은 준비 중입니다.")
+
+    st.info(f"💡 힌트: {q['hint']}")
+    st.divider()
+
+    feedback_key = f"feedback_{q['id']}"
+    prev_feedback = st.session_state.feedbacks.get(q["id"], None)
+
+    answer = st.text_area(
+        "📝 내 답안",
+        placeholder=q["placeholder"],
+        height=120,
+        key=f"answer_{q['id']}"
+    )
+
+    if prev_feedback:
+        st.success("✅ 이전 피드백")
+        st.markdown(prev_feedback)
+        st.divider()
+
+    if st.button("제출하기", type="primary", disabled=not answer.strip()):
+        if q["key_answer"] == "":
+            st.warning("이 문항은 아직 준비 중입니다.")
+        else:
+            with st.spinner("AI가 피드백을 작성 중입니다..."):
+                prompt = f"""당신은 중학교 1학년 국어 교사입니다. 아래는 황순원의 단편소설 「소나기」 전문입니다. 이 작품을 완전히 숙지한 후 학생의 서술형 답안에 피드백을 작성해 주세요.
 
 [작품 전문]
 {SONAGI}
 
 [문제]
-다음 장면에서 밑줄 친 '조약돌'이 의미하는 바를 작성하시오.
+{q['question']}
 
-"그러다가 소녀가 물속에서 무엇을 하나 집어낸다. 하얀 조약돌이었다. 그러고는 벌떡 일어나 팔짝팔짝 징검다리를 뛰어 건너간다. 다 건너가더니 홱 이리로 돌아서며, '이 바보.' 조약돌이 날아왔다. 소년은 저도 모르게 벌떡 일어났다."
+[지문]
+{q['excerpt']}
 
 [핵심 개념]
 - 상징: 추상적인 개념(감정, 생각)을 구체적인 사물로 표현하는 방법
-- 이 문항의 핵심: 조약돌이라는 구체적 소재가 어떤 추상적 감정을 나타내는지 추론하는 것
+- 이 문항의 핵심: 작품 속 소재나 표현이 어떤 추상적 의미를 나타내는지 추론하는 것
 
 [채점 기준]
-- 핵심 답: 조약돌은 소녀가 소년에게 보내는 관심, 호감, 애정을 상징함
-- 소년이 이후 조약돌을 주머니에 넣고 소중히 간직하는 장면과 연결하여 이해할 것
+{q['key_answer']}
+
+[답안 작성 프레임]
+{q['answer_frame']}
 
 [학생 답변]
 {answer}
@@ -152,26 +249,30 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 - 아래 순서로 피드백을 구성할 것:
   1. 학생 답변에서 잘된 점 또는 방향이 맞는 부분 언급
   2. 장면 속 인물의 행동과 감정에 주목하도록 질문 형식으로 유도
-     (예: "소녀가 조약돌을 던진 후 소년은 어떤 행동을 했나요?")
-  3. 상징 개념과 연결지어 다시 생각해 볼 수 있도록 방향 제시
+  3. 답안 작성 프레임을 제시하며 다시 써볼 수 있도록 안내
 - 이름이나 호칭 없이 피드백 내용만 작성
-- 150자 이내로 간결하게
+- 200자 이내로 간결하게
 - 친절한 존댓말 사용"""
 
-        api_key = st.secrets["GEMINI_API_KEY"]
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+                api_key = st.secrets["GEMINI_API_KEY"]
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+                payload = {"contents": [{"parts": [{"text": prompt}]}]}
+                res = requests.post(url, json=payload)
+                data = res.json()
 
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}]
-        }
+                if "candidates" in data:
+                    feedback = data["candidates"][0]["content"]["parts"][0]["text"]
+                    st.session_state.feedbacks[q["id"]] = feedback
+                    st.session_state.completed.add(q["id"])
+                    st.success("✅ 피드백")
+                    st.markdown(feedback)
+                else:
+                    st.error(f"오류 내용: {data}")
 
-        res = requests.post(url, json=payload)
-        data = res.json()
-
-        if "candidates" in data:
-            feedback = data["candidates"][0]["content"]["parts"][0]["text"]
-        else:
-            feedback = f"오류 내용: {data}"
-
-    st.success("✅ 피드백")
-    st.markdown(feedback)
+# ── 페이지 라우팅 ─────────────────────────────────────────────────
+if st.session_state.page == "main":
+    show_main()
+elif st.session_state.page == "question":
+    q = next((q for q in QUESTIONS if q["id"] == st.session_state.current_q), None)
+    if q:
+        show_question(q)
