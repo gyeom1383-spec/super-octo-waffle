@@ -291,8 +291,16 @@ def show_question(q):
     st.info(f"💡 힌트: {q['hint']}")
     st.divider()
 
-    st.markdown("**✏️ 답안 작성 프레임**")
-    st.code(q["answer_frame"], language=None)
+    st.markdown("**✏️ 답안 작성틀**")
+    st.markdown(
+        f"""
+        <div style="font-size: 1rem; padding: 1rem; border-radius: 0.5rem; background-color: rgba(151, 166, 195, 0.15);">
+            {q['answer_frame']}
+        </div>
+        <br>
+        """, 
+        unsafe_allow_html=True
+    )
 
     prev_feedback = st.session_state.feedbacks.get(q["id"], None)
 
@@ -331,7 +339,7 @@ def show_question(q):
 [채점 기준]
 {q['key_answer']}
 
-[답안 작성 프레임]
+[답안 작성틀]
 {q['answer_frame']}
 
 [학생 답변]
@@ -343,7 +351,7 @@ def show_question(q):
 - 아래 순서로 피드백을 구성할 것:
   1. 학생 답변에서 잘된 점 또는 방향이 맞는 부분 언급
   2. 장면 속 인물의 행동과 감정에 주목하도록 질문 형식으로 유도
-  3. 답안 작성 프레임을 제시하며 다시 써볼 수 있도록 안내
+  3. 답안 작성틀을 제시하며 다시 써볼 수 있도록 안내
 - 이름이나 호칭 없이 피드백 내용만 작성
 - 200자 이내로 간결하게
 - 친절한 존댓말 사용"""}]}]}
