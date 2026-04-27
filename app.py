@@ -54,7 +54,7 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 - 친절한 존댓말 사용"""
 
         api_key = st.secrets["GEMINI_API_KEY"]
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key={api_key}"
 
         payload = {
             "contents": [{"parts": [{"text": prompt}]}]
