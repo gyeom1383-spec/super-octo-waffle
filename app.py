@@ -1,17 +1,16 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 
 st.set_page_config(page_title="국어 서술형 답안 연습", page_icon="✏️")
 
 # Gemini API 설정
-client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 st.title("✏️ 국어 서술형 답안 연습")
 st.caption("답안을 작성한 뒤 제출하면 AI 피드백을 받을 수 있어요.")
 
 st.divider()
 
-# 문항
 st.markdown("#### 문제")
 st.markdown(
     """다음 장면에서 밑줄 친 소재가 의미하는 바를 작성하시오.
@@ -30,7 +29,6 @@ st.info("💡 힌트: 교과서 27~28페이지를 확인하세요.")
 
 st.divider()
 
-# 답안 입력
 answer = st.text_area(
     "📝 내 답안",
     placeholder="이 장면에서 조약돌은 ~ 을/를 의미한다.",
@@ -46,23 +44,20 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 다음 장면에서 밑줄 친 '조약돌'이 의미하는 바를 작성하시오.
 
 [작품 맥락]
-황순원의 단편소설 「소나기」의 한 장면입니다. 소녀가 소년에게 조약돌을 던지는 행동이 묘사되어 있습니다.
-조약돌은 소녀가 소년에게 보내는 관심과 호감의 표현, 즉 소녀의 마음(애정, 장난기 어린 관심)을 상징합니다.
+황순원의 단편소설 「소나기」의 한 장면입니다.
+조약돌은 소녀가 소년에게 보내는 관심과 호감, 즉 소녀의 마음을 상징합니다.
 
 [학생 답변]
 "{answer}"
 
 [피드백 지침]
-- 100자 이내로 간결하게 작성
-- 잘된 점 한 가지 + 보완할 점(있다면) 한 가지
-- 핵심 개념(소재의 상징적 의미)을 한 줄로 정리하며 마무리
-- 친절한 존댓말 사용
-- 정답/오답을 직접 언급하지 말고 방향을 안내하는 방식으로"""
+- 100자 이내로 간결하게
+- 잘된 점 + 보완할 점
+- 핵심 개념 한 줄 정리로 마무리
+- 친절한 존댓말 사용"""
 
-        response = client.models.generate_content(
-            model="gemini-1.5-flash-latest",
-            contents=prompt
-        )
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
         feedback = response.text
 
     st.success("✅ 피드백")
