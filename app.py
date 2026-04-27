@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import time
 
 st.set_page_config(page_title="소나기 속 숨은 의미 찾기", page_icon="🌧️", layout="centered")
 
@@ -309,7 +310,10 @@ def show_question(q):
 
     if st.button("제출하기", type="primary", disabled=not answer.strip()):
         with st.spinner("AI가 피드백을 작성 중입니다..."):
-            prompt = f"""당신은 중학교 1학년 국어 교사입니다. 아래는 황순원의 단편소설 「소나기」 전문입니다. 이 작품을 완전히 숙지한 후 학생의 서술형 답안에 피드백을 작성해 주세요.
+
+            api_key = st.secrets["GEMINI_API_KEY"]
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+            payload = {"contents": [{"parts": [{"text": f"""당신은 중학교 1학년 국어 교사입니다. 아래는 황순원의 단편소설 「소나기」 전문입니다. 이 작품을 완전히 숙지한 후 학생의 서술형 답안에 피드백을 작성해 주세요.
 
 [작품 전문]
 {SONAGI}
@@ -342,22 +346,34 @@ def show_question(q):
   3. 답안 작성 프레임을 제시하며 다시 써볼 수 있도록 안내
 - 이름이나 호칭 없이 피드백 내용만 작성
 - 200자 이내로 간결하게
-- 친절한 존댓말 사용"""
+- 친절한 존댓말 사용"""}]}]}
 
-            api_key = st.secrets["GEMINI_API_KEY"]
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-            payload = {"contents": [{"parts": [{"text": prompt}]}]}
-            res = requests.post(url, json=payload)
-            data = res.json()
+            max_retries = 3
+            feedback = None
 
-            if "candidates" in data:
-                feedback = data["candidates"][0]["content"]["parts"][0]["text"]
+            for attempt in range(max_retries):
+                res = requests.post(url, json=payload)
+                data = res.json()
+
+                if "candidates" in data:
+                    feedback = data["candidates"][0]["content"]["parts"][0]["text"]
+                    break
+                elif data.get("error", {}).get("code") == 503:
+                    if attempt < max_retries - 1:
+                        time.sleep(3)
+                        continue
+                    else:
+                        st.error("서버가 일시적으로 혼잡합니다. 잠시 후 다시 제출해주세요.")
+                        break
+                else:
+                    st.error(f"오류 내용: {data}")
+                    break
+
+            if feedback:
                 st.session_state.feedbacks[q["id"]] = feedback
                 st.session_state.completed.add(q["id"])
                 st.success("✅ 피드백")
                 st.markdown(feedback)
-            else:
-                st.error(f"오류 내용: {data}")
 
 if st.session_state.page == "main":
     show_main()
