@@ -1,6 +1,3 @@
-아래 코드 전체 복사해서 붙여넣으세요!
-
-```python
 import streamlit as st
 import requests
 
