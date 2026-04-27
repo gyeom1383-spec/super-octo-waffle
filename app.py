@@ -41,11 +41,11 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 다음 장면에서 밑줄 친 '조약돌'이 의미하는 바를 작성하시오.
 
 [작품 맥락]
-황순원의 단편소설 「소나기」의 한 장면입니다.
+황순원의 단편소설 소나기의 한 장면입니다.
 조약돌은 소녀가 소년에게 보내는 관심과 호감, 즉 소녀의 마음을 상징합니다.
 
 [학생 답변]
-"{answer}"
+{answer}
 
 [피드백 지침]
 - 100자 이내로 간결하게
@@ -62,7 +62,11 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 
         res = requests.post(url, json=payload)
         data = res.json()
-        feedback = data["candidates"][0]["content"]["parts"][0]["text"]
+
+        if "candidates" in data:
+            feedback = data["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            feedback = f"오류 내용: {data}"
 
     st.success("✅ 피드백")
     st.markdown(feedback)
