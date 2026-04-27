@@ -1,10 +1,10 @@
+아래 코드 전체 복사해서 붙여넣으세요!
+
+```python
 import streamlit as st
-import google.generativeai as genai
+import requests
 
 st.set_page_config(page_title="국어 서술형 답안 연습", page_icon="✏️")
-
-# Gemini API 설정
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 st.title("✏️ 국어 서술형 답안 연습")
 st.caption("답안을 작성한 뒤 제출하면 AI 피드백을 받을 수 있어요.")
@@ -56,9 +56,17 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 - 핵심 개념 한 줄 정리로 마무리
 - 친절한 존댓말 사용"""
 
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt)
-        feedback = response.text
+        api_key = st.secrets["GEMINI_API_KEY"]
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}]
+        }
+
+        res = requests.post(url, json=payload)
+        data = res.json()
+        feedback = data["candidates"][0]["content"]["parts"][0]["text"]
 
     st.success("✅ 피드백")
     st.markdown(feedback)
+```
