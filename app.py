@@ -48,6 +48,7 @@ if st.button("제출하기", type="primary", disabled=not answer.strip()):
 {answer}
 
 [피드백 지침]
+- 학생 이름이나 호칭 없이 피드백 내용만 작성
 - 100자 이내로 간결하게
 - 잘된 점 + 보완할 점
 - 핵심 개념 한 줄 정리로 마무리
