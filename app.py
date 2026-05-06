@@ -203,7 +203,7 @@ QUESTIONS = [
         "hint": "교과서 31페이지를 확인하세요.",
         "placeholder": "ⓐ에서 소녀는 [심리 상태]였는데, ⓑ에서는 [심리 상태]로 변했다.",
         "answer_frame": "ⓐ에서 소녀는 [심리 상태]였는데, ⓑ에서는 [심리 상태]로 변했다.",
-        "key_answer": "ⓐ에서 소녀는 허수아비를 처음 발견한 신선함과 즐거움을 느끼고 있었으나, ⓑ에서는 소년과 함께하는 시간이 더욱 신나고 흥겨운 상태로 고조됨. 허수아비가 '좀 전보다 더 우쭐거린다'는 표현은 소녀의 들뜬 감정이 점점 커지고 있음을 간접적으로 보여줌.",
+        "key_answer": "ⓐ에서 소녀는 허수아비를 처음 발견한 신선함과 즐거움을 느끼고 있었으나, ⓑ에서는 소년과 함께하는 시간이 더욱 신나고 흥겨운 상태로 고조됨.",
     },
     {
         "id": 4,
@@ -221,10 +221,10 @@ QUESTIONS = [
 수숫단 속은 비는 안 새었다. 그저 어둡고 좁은 게 안됐다. 앞에 나앉은 소년은 그냥 비를 맞아야만 했다. 그런 소년의 어깨에서 김이 올랐다.<br>
 소녀가 속삭이듯이, 이리 들어와 앉으라고 했다. 괜찮다고 했다. 소녀가 다시 들어와 앉으라고 했다. 할 수 없이 뒷걸음질을 쳤다. <u>ⓑ그 바람에 소녀가 안고 있는 꽃묶음이 우그러들었다.</u>""",
         "question": "지문1의 ⓐ와 지문2의 ⓑ의 의미를 비교하여 서술해 봅시다.",
-        "hint": "[힌트 1] [지문1]은 교과서 32페이지, [지문2]는 36페이지를 확인하세요.\n[힌트 2] ⓐ(싱싱한 꽃)를 건네는 행동에는 소년의 어떤 마음이 담겨 있는지, ⓑ(우그러진 꽃)의 모습은 앞으로 두 사람에게 일어날 사건을 어떻게 미리 보여주는지(암시하는지) 두 장면의 분위기를 대조해 보세요.",
+        "hint": "[힌트 1] [지문1]은 교과서 32페이지, [지문2]는 36페이지를 확인하세요.\n[힌트 2] ⓐ(싱싱한 꽃)를 건네는 행동에는 소년의 어떤 마음이 담겨 있는지, ⓑ(우그러진 꽃)의 모습은 앞으로 두 사람에게 일어날 사건을 어떻게 미리 보여주는지 생각해 보세요.",
         "placeholder": "ⓐ는 [               ] 의미를 지니지만, 이와 대조적으로 ⓑ는 [               ] 것을 암시한다.",
         "answer_frame": "ⓐ는 [               ] 의미를 지니지만, 이와 대조적으로 ⓑ는 [               ] 것을 암시한다.",
-        "key_answer": "ⓐ는 소녀를 향한 소년의 맑고 순수한 사랑(호감)을 의미하는 반면, ⓑ는 꽃이 망가지는 모습을 통해 두 사람에게 닥칠 시련이나 슬픈 결말(이별)을 암시하여, 밝고 어두운 두 분위기가 서로 대조(대비)를 이룸.",
+        "key_answer": "ⓐ는 소녀를 향한 소년의 맑고 순수한 사랑(호감)을 의미하는 반면, ⓑ는 꽃이 망가지는 모습을 통해 두 사람에게 닥칠 시련이나 슬픈 결말(이별)을 암시하여, 밝고 어두운 두 분위기가 서로 대조를 이룸.",
     },
     {
         "id": 5,
@@ -236,7 +236,7 @@ QUESTIONS = [
         "hint": "교과서 40페이지를 확인해보세요.",
         "placeholder": "소년이 그늘만 짚어 돌아온 것은 [이유]이기 때문이다.",
         "answer_frame": "소년이 그늘만 짚어 돌아온 것은 [이유]이기 때문이다.",
-        "key_answer": "소년은 덕쇠 할아버지네 호두밭에서 몰래 호두를 딴 것이므로 달빛에 들킬까 봐 그늘만 골라 걸어온 것임. 소녀에게 호두를 주고 싶은 마음이 간절했지만 남의 밭에서 딴 것이기에 들키지 않으려는 조마조마한 심리가 담겨 있음.",
+        "key_answer": "소년은 덕쇠 할아버지네 호두밭에서 몰래 호두를 딴 것이므로 달빛에 들킬까 봐 그늘만 골라 걸어온 것임.",
     },
     {
         "id": 6,
@@ -246,7 +246,7 @@ QUESTIONS = [
         "hint": "교과서 42페이지를 확인하세요.",
         "placeholder": "소녀가 입던 옷을 그대로 입혀 달라고 한 것은 [이유]이기 때문이다.",
         "answer_frame": "소녀가 입던 옷을 그대로 입혀 달라고 한 것은 [이유]이기 때문이다.",
-        "key_answer": "소녀가 입던 옷(분홍 스웨터)에는 소년과 함께 소나기를 맞으며 도랑을 건널 때 묻은 흙탕물 얼룩이 있음. 소녀는 그 얼룩, 즉 소년과의 소중한 추억을 간직한 채 떠나고 싶었던 것임. 소년에 대한 애틋한 감정과 그리움이 담긴 행동으로 해석됨.",
+        "key_answer": "소녀가 입던 옷(분홍 스웨터)에는 소년과 함께 소나기를 맞으며 도랑을 건널 때 묻은 흙탕물 얼룩이 있음. 소녀는 그 얼룩, 즉 소년과의 소중한 추억을 간직한 채 떠나고 싶었던 것임.",
     },
 ]
 
@@ -288,13 +288,12 @@ def show_question(q):
     st.divider()
 
     st.markdown(q["excerpt"], unsafe_allow_html=True)
-    
-    # 힌트에 줄바꿈이 있는 경우 쪼개서 각각의 st.info 박스로 예쁘게 렌더링
+
     hints = q['hint'].split('\n')
     for h in hints:
         if h.strip():
             st.info(h.strip(), icon="💡")
-            
+
     st.divider()
 
     st.markdown("**✏️ 답안 작성틀**")
@@ -304,7 +303,7 @@ def show_question(q):
             {q['answer_frame']}
         </div>
         <br>
-        """, 
+        """,
         unsafe_allow_html=True
     )
 
@@ -325,9 +324,15 @@ def show_question(q):
     if st.button("제출하기", type="primary", disabled=not answer.strip()):
         with st.spinner("AI가 피드백을 작성 중입니다..."):
 
-            api_key = st.secrets["GEMINI_API_KEY"]
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-            payload = {"contents": [{"parts": [{"text": f"""당신은 중학교 1학년 국어 교사입니다. 아래는 황순원의 단편소설 「소나기」 전문입니다. 이 작품을 완전히 숙지한 후 학생의 서술형 답안에 피드백을 작성해 주세요.
+            api_key = st.secrets["GROQ_API_KEY"]
+            url = "https://api.groq.com/openai/v1/chat/completions"
+
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json"
+            }
+
+            prompt = f"""당신은 중학교 1학년 국어 교사입니다. 아래는 황순원의 단편소설 「소나기」 전문입니다. 이 작품을 완전히 숙지한 후 학생의 서술형 답안에 피드백을 작성해 주세요.
 
 [작품 전문]
 {SONAGI}
@@ -354,28 +359,36 @@ def show_question(q):
 [피드백 작성 원칙 — 반드시 준수]
 1. 학생이 정답에 가까운 올바른 답변을 했을 경우:
    - 답변이 훌륭함을 인정하고 충분히 칭찬해 주세요.
-   - 여기서 끝내지 말고, "그렇게 생각하게 된 소설 속 구절이나 근거는 무엇인가요?" 또는 "이 장면과 연결된 또 다른 상징은 무엇이 있을까요?"와 같이 사고를 확장할 수 있는 심화 질문을 던지세요.
+   - 사고를 확장할 수 있는 심화 질문을 던지세요.
 
 2. 학생이 정답에서 벗어나거나 핵심을 놓쳤을 경우:
    - 절대로 정답을 직접 알려주지 마세요.
-   - 학생 답변에서 방향이 맞는 부분은 격려해 주고, 놓친 부분은 장면 속 인물의 행동이나 감정에 주목하도록 유도하는 질문을 던지세요.
+   - 장면 속 인물의 행동이나 감정에 주목하도록 유도하는 질문을 던지세요.
 
 3. 공통 사항:
-   - 학생이 자신의 답안을 더 구체적으로 고쳐 써볼 수 있도록 안내하세요.
+   - 학생이 답안을 더 구체적으로 고쳐 써볼 수 있도록 안내하세요.
    - 이름이나 호칭 없이 피드백 내용만 작성하세요.
-   - 200자 내외로 간결하고 친절한 존댓말을 사용하세요."""}]}]}
+   - 200자 내외로 간결하고 친절한 존댓말을 사용하세요."""
+
+            payload = {
+                "model": "llama-3.3-70b-versatile",
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "max_tokens": 1000
+            }
 
             max_retries = 3
             feedback = None
 
             for attempt in range(max_retries):
-                res = requests.post(url, json=payload)
+                res = requests.post(url, headers=headers, json=payload)
                 data = res.json()
 
-                if "candidates" in data:
-                    feedback = data["candidates"][0]["content"]["parts"][0]["text"]
+                if "choices" in data:
+                    feedback = data["choices"][0]["message"]["content"]
                     break
-                elif data.get("error", {}).get("code") == 503:
+                elif res.status_code == 503:
                     if attempt < max_retries - 1:
                         time.sleep(3)
                         continue
