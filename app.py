@@ -1,6 +1,9 @@
 import streamlit as st
 import requests
 import time
+import gspread
+from google.oauth2.service_account import Credentials
+from datetime import datetime
 
 # 페이지 설정
 st.set_page_config(page_title="소나기 속 숨은 의미 찾기", page_icon="🌧️", layout="centered")
@@ -99,8 +102,8 @@ QUESTIONS = [
 소녀가 속삭이듯이, 이리 들어와 앉으라고 했다. 괜찮다고 했다. 소녀가 다시 들어와 앉으라고 했다. 할 수 없이 뒷걸음질을 쳤다. <u>ⓑ그 바람에 소녀가 안고 있는 꽃묶음이 우그러들었다.</u>""",
         "question": "지문1의 ⓐ와 지문2의 ⓑ의 의미를 비교하여 서술해 봅시다.",
         "hint": "[힌트 1] [지문1]은 교과서 32페이지, [지문2]는 36페이지를 확인하세요.\n[힌트 2] ⓐ(싱싱한 꽃)를 건네는 행동에는 소년의 어떤 마음이 담겨 있는지, ⓑ(우그러진 꽃)의 모습은 앞으로 두 사람에게 일어날 사건을 어떻게 미리 보여주는지 생각해 보세요.",
-        "placeholder": "ⓐ는 [                ] 의미를 지니지만, 이와 대조적으로 ⓑ는 [                ] 것을 암시한다.",
-        "answer_frame": "ⓐ는 [                ] 의미를 지니지만, 이와 대조적으로 ⓑ는 [                ] 것을 암시한다.",
+        "placeholder": "ⓐ는 [                ] 의미를 지니지만, 이와 대조적으로 ⓑ는 [                ] 것을 암시한다.",
+        "answer_frame": "ⓐ는 [                ] 의미를 지니지만, 이와 대조적으로 ⓑ는 [                ] 것을 암시한다.",
         "key_answer": "ⓐ는 소녀를 향한 소년의 맑고 순수한 사랑(호감)을 의미하는 반면, ⓑ는 꽃이 망가지는 모습을 통해 두 사람에게 닥칠 시련이나 슬픈 결말(이별)을 암시하여, 밝고 어두운 두 분위기가 서로 대조를 이룸.",
     },
     {
@@ -109,7 +112,7 @@ QUESTIONS = [
         "tag": "인물의 심리",
         "context": """[관련 장면]
 이날 밤, 소년은 몰래 덕쇠 할아버지네 호두밭으로 갔다.
-낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜩했다. 그러나 다음 순간, 굵은 호두야 많이 떨어져라, 많이 떨어져라, 저도 모를 힘에 이끌려 마구 작대기를 내리치는 것이었다.
+낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜻했다. 그러나 다음 순간, 굵은 호두야 많이 떨어져라, 많이 떨어져라, 저도 모를 힘에 이끌려 마구 작대기를 내리치는 것이었다.
 돌아오는 길에는 열이틀 달이 지우는 그늘만 골라 짚었다. 그늘의 고마움을 처음 느꼈다.
 불룩한 주머니를 어루만졌다. 호두 송이를 맨손으로 깠다가는 옴이 오르기 쉽다는 말 같은 건 아무렇지도 않았다. 그저 근동에서 제일가는 이 덕쇠 할아버지네 호두를 어서 소녀에게 맛보여야 한다는 생각만이 앞섰다.
 그러다, 아차, 하는 생각이 들었다. 소녀더러 병이 좀 낫거들랑 이사 가기 전에 한번 개울가로 나와 달라는 말을 못 해 둔 것이었다. 바보 같은 것, 바보 같은 것.""",
@@ -156,6 +159,29 @@ if "completed" not in st.session_state:
     st.session_state.completed = set()
 if "feedbacks" not in st.session_state:
     st.session_state.feedbacks = {}
+
+
+# ✅ Google Sheets 기록 함수
+def log_to_sheets(question_label, student_answer, feedback):
+    try:
+        creds = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"],
+            scopes=[
+                "https://spreadsheets.google.com/feeds",
+                "https://www.googleapis.com/auth/drive"
+            ]
+        )
+        client = gspread.authorize(creds)
+        sheet = client.open("아이들 질문 기록").sheet1
+        sheet.append_row([
+            datetime.now().strftime("%Y-%m-%d %H:%M"),
+            question_label,
+            student_answer,
+            feedback
+        ])
+    except Exception as e:
+        pass  # 기록 실패해도 앱은 정상 작동
+
 
 def show_main():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
@@ -240,7 +266,6 @@ def show_question(q):
                 "Content-Type": "application/json"
             }
 
-            # [원상복구된 피드백 포맷 + 한글 전용 제약]
             prompt = f"""당신은 중학교 1학년 학생들을 아주 사랑하고, 아이들의 눈높이에 맞춰 가장 쉽고 다정하게 설명해 주는 중학교 국어 선생님입니다. 학생이 소설 「소나기」에 대해 작성한 답안을 읽고 피드백을 작성해 주세요.
 
 [🚨 절대 지켜야 할 언어 규칙 🚨]
@@ -294,7 +319,7 @@ def show_question(q):
 
             for attempt in range(max_retries):
                 res = requests.post(url, headers=headers, json=payload)
-                
+
                 if res.status_code == 200:
                     data = res.json()
                     if "choices" in data:
@@ -313,6 +338,9 @@ def show_question(q):
                 st.session_state.completed.add(q["id"])
                 st.success("✅ 선생님의 피드백이 도착했습니다!")
                 st.markdown(feedback)
+
+                # ✅ Google Sheets에 기록
+                log_to_sheets(q["label"], answer, feedback)
 
 if st.session_state.page == "main":
     show_main()
