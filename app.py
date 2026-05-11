@@ -254,7 +254,7 @@ def show_intro():
     )
     student_group = st.selectbox(
         "👥 모둠을 선택하세요",
-        [f"{i}모둠" for i in range(1, 7)]
+        [f"{i}모둠" for i in range(1, 8)]
     )
 
     if st.button("시작하기 🌧️", type="primary", use_container_width=True):
