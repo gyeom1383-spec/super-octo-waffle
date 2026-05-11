@@ -8,7 +8,6 @@ from datetime import datetime
 # 페이지 설정
 st.set_page_config(page_title="소나기 속 숨은 의미 찾기", page_icon="🌧️", layout="centered")
 
-# 문제 데이터 전체
 QUESTIONS = [
     {
         "id": 1,
@@ -166,7 +165,6 @@ if "student_group" not in st.session_state:
     st.session_state.student_group = None
 
 
-# ✅ Google Sheets 기록 함수
 def log_to_sheets(question_label, student_answer, feedback):
     try:
         creds = Credentials.from_service_account_info(
@@ -187,10 +185,66 @@ def log_to_sheets(question_label, student_answer, feedback):
             feedback
         ])
     except Exception as e:
-        pass  # 기록 실패해도 앱은 정상 작동
+        pass
 
 
-# ✅ 시작 화면 (반/모둠 선택)
+def get_feedback(q, answer):
+    api_key = st.secrets["GROQ_API_KEY"]
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+
+    # ✅ 핵심 변경: 모델을 gemma2-9b-it로 교체 + 한국어 강제 지시 강화
+    system_prompt = """너는 대한민국 중학교 1학년 국어 선생님이야.
+반드시 한국어(한글)로만 대답해야 해.
+중국어, 일본어, 영어 등 다른 언어는 단 한 글자도 절대 쓰면 안 돼.
+한글 자모(가나다라...)로만 구성된 문장으로만 답변해."""
+
+    prompt = f"""학생이 소설 「소나기」 문제에 답안을 작성했어. 아래 내용을 바탕으로 피드백을 써줘.
+
+[문제]: {q['question']}
+[지문]: {q['excerpt']}
+[정답 방향]: {q['key_answer']}
+[학생 답변]: {answer}
+
+아래 두 부분으로만 피드백을 작성해줘. 반드시 한국어(한글)로만 써야 해.
+
+[선생님의 다정한 피드백 💌]
+학생 답변에서 잘한 부분을 구체적으로 칭찬하고, 보완할 점을 지문의 표현을 따옴표로 인용하면서 알려줘. 정답은 직접 알려주지 말고 스스로 생각할 수 있게 힌트만 줘. 2~3문장으로 써줘.
+
+[한 걸음 더 나아가기 위한 나의 미션 🐾]
+- 내가 잘한 점: (핵심어 위주로 간단히)
+- 나의 다음 행동: (무엇을 고치거나 추가할지 구체적으로)
+- 힌트가 되는 지문: (다시 읽어볼 대사나 행동 인용)"""
+
+    payload = {
+        "model": "gemma2-9b-it",  # ✅ 한국어 지시를 더 잘 따르는 모델로 교체
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 1000,
+        "temperature": 0.3
+    }
+
+    for attempt in range(3):
+        try:
+            res = requests.post(url, headers=headers, json=payload)
+            if res.status_code == 200:
+                data = res.json()
+                if "choices" in data:
+                    return data["choices"][0]["message"]["content"]
+            elif res.status_code in [503, 429]:
+                if attempt < 2:
+                    time.sleep(3)
+                    continue
+        except Exception as e:
+            pass
+    return None
+
+
 def show_intro():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
     st.caption("시작하기 전에 반과 모둠을 선택해주세요!")
@@ -289,89 +343,16 @@ def show_question(q):
 
     if st.button("제출하기", type="primary", disabled=not answer.strip()):
         with st.spinner("인공지능 선생님이 꼼꼼하게 읽어보고 있어요..."):
-
-            api_key = st.secrets["GROQ_API_KEY"]
-            url = "https://api.groq.com/openai/v1/chat/completions"
-            headers = {
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            }
-
-            prompt = f"""당신은 중학교 1학년 학생들을 아주 사랑하고, 아이들의 눈높이에 맞춰 가장 쉽고 다정하게 설명해 주는 중학교 국어 선생님입니다. 학생이 소설 「소나기」에 대해 작성한 답안을 읽고 피드백을 작성해 주세요.
-
-[🚨 절대 지켜야 할 언어 규칙 🚨]
-1. 100% 순수한 한글(한국어)만 사용하세요.
-2. 영어 알파벳(A-Z, a-z), 한자(漢字), 일본어 등 외국어 문자는 단 한 글자도 절대 포함해서는 안 됩니다. (예: 'OK', 'Good', 'AI', 'Point' 등 절대 금지. 모두 우리말로 쓰세요.)
-3. 중학교 1학년(13살) 학생이 단번에 이해할 수 있도록 아주 쉽고 친근한 우리말만 사용하세요.
-4. '매개체', '암시', '복선', '내적 갈등' 같은 어려운 문학 용어는 절대 쓰지 마세요. 대신 '마음을 전해주는 물건', '앞으로 일어날 슬픈 일', '마음속 고민'처럼 아주 쉽게 풀어서 설명하세요.
-
-[문제 정보]
-- 작품 관련 장면: {q['context']}
-- 문제: {q['question']}
-- 지문: {q['excerpt']}
-- 채점 기준(정답 방향): {q['key_answer']}
-
-[학생 답변]
-{answer}
-
-[피드백 작성 방법 - 구체적인 비계(디딤돌) 제공]
-1. 칭찬은 아주 구체적으로: 
-   - 학생이 작성한 답변 중 어떤 단어나 문장이 어떻게 좋은지 구체적으로 콕 집어서 칭찬해 주세요. 
-   - (예: "우리 친구가 '소년을 좋아하는 마음'이라고 정확한 단어를 써준 부분이 아주 훌륭해요!")
-
-2. 보완할 점은 아주 구체적인 행동 지침으로: 
-   - 학생이 무엇을 써야 할지 바로 알 수 있도록 지문에 나오는 구체적인 단어나 인물의 대사, 행동을 직접 따옴표('')로 인용해서 명확한 행동 힌트를 주세요. 
-   - (예: "지문에서 허수아비가 '좀 전보다 더 우쭐거린다'고 표현된 부분을 활용해서, 소년과 함께 뛰놀면서 소녀의 마음이 얼마나 더 신나고 들떴는지 지금 쓴 답안에 한 문장으로 더 적어볼까요?")
-
-3. 절대로 정답을 직접 알려주지 마세요. 힌트를 바탕으로 학생 스스로 문장을 완성할 기회를 주어야 합니다.
-
-[피드백 출력 형식 — 반드시 아래 두 부분으로만 구성하세요]
-
-[선생님의 다정한 피드백 💌]
-(칭찬과 구체적인 행동 방향을 2~3문장으로 제시하세요.)
-
-[한 걸음 더 나아가기 위한 나의 미션 🐾]
-- 내가 잘한 점: (핵심어 위주로 간단히)
-- 나의 다음 행동: (무엇을 고치거나 추가해야 하는지 구체적 지시)
-- 힌트가 되는 지문: (다시 읽어봐야 할 특정 행동이나 대사 인용)"""
-
-            payload = {
-                "model": "llama-3.3-70b-versatile",
-                "messages": [
-                    {"role": "system", "content": "당신은 한국어만 사용하는 교사입니다. 영어 알파벳이나 한자를 전혀 사용하지 않고 오직 한글 자모로만 답변하세요."},
-                    {"role": "user", "content": prompt}
-                ],
-                "max_tokens": 1000,
-                "temperature": 0.3
-            }
-
-            max_retries = 3
-            feedback = None
-
-            for attempt in range(max_retries):
-                res = requests.post(url, headers=headers, json=payload)
-
-                if res.status_code == 200:
-                    data = res.json()
-                    if "choices" in data:
-                        feedback = data["choices"][0]["message"]["content"]
-                        break
-                elif res.status_code in [503, 429]:
-                    if attempt < max_retries - 1:
-                        time.sleep(3)
-                        continue
-                else:
-                    st.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
-                    break
+            feedback = get_feedback(q, answer)
 
             if feedback:
                 st.session_state.feedbacks[q["id"]] = feedback
                 st.session_state.completed.add(q["id"])
                 st.success("✅ 선생님의 피드백이 도착했습니다!")
                 st.markdown(feedback)
-
-                # ✅ Google Sheets에 기록
                 log_to_sheets(q["label"], answer, feedback)
+            else:
+                st.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
 
 
 # 페이지 라우팅
