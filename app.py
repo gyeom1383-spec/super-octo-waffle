@@ -166,27 +166,30 @@ if "student_group" not in st.session_state:
 
 
 def log_to_sheets(question_label, student_answer, feedback):
-    try:
-        creds = Credentials.from_service_account_info(
-            st.secrets["gcp_service_account"],
-            scopes=[
-                "https://spreadsheets.google.com/feeds",
-                "https://www.googleapis.com/auth/drive"
-            ]
-        )
-        client = gspread.authorize(creds)
-        sheet = client.open("26년 용화중_상징적 의미 추론하기(소나기)").sheet1
-        sheet.append_row([
-            datetime.now().strftime("%Y-%m-%d %H:%M"),
-            st.session_state.student_class,
-            st.session_state.student_group,
-            question_label,
-            student_answer,
-            feedback
-        ])
-    except Exception as e:
-        pass
-
+    for attempt in range(3):  # 실패해도 3번 재시도
+        try:
+            creds = Credentials.from_service_account_info(
+                st.secrets["gcp_service_account"],
+                scopes=[
+                    "https://spreadsheets.google.com/feeds",
+                    "https://www.googleapis.com/auth/drive"
+                ]
+            )
+            client = gspread.authorize(creds)
+            sheet = client.open("26년 용화중_상징적 의미 추론하기(소나기)").sheet1
+            sheet.append_row([
+                datetime.now().strftime("%Y-%m-%d %H:%M"),
+                st.session_state.student_class,
+                st.session_state.student_group,
+                question_label,
+                student_answer,
+                feedback
+            ])
+            break  # 성공하면 재시도 중단
+        except Exception as e:
+            if attempt < 2:
+                time.sleep(2)  # 2초 후 재시도
+            continue
 
 def get_feedback(q, answer):
     api_key = st.secrets["GROQ_API_KEY"]
