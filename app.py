@@ -112,7 +112,7 @@ QUESTIONS = [
         "tag": "인물의 심리",
         "context": """[관련 장면]
 이날 밤, 소년은 몰래 덕쇠 할아버지네 호두밭으로 갔다.
-낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜻했다. 그러나 다음 순간, 굵은 호두야 많이 떨어져라, 많이 떨어져라, 저도 모를 힘에 이끌려 마구 작대기를 내리치는 것이었다.
+낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜩했다. 그러나 다음 순간, 굵은 호두야 많이 떨어져라, 많이 떨어져라, 저도 모를 힘에 이끌려 마구 작대기를 내리치는 것이었다.
 돌아오는 길에는 열이틀 달이 지우는 그늘만 골라 짚었다. 그늘의 고마움을 처음 느꼈다.
 불룩한 주머니를 어루만졌다. 호두 송이를 맨손으로 깠다가는 옴이 오르기 쉽다는 말 같은 건 아무렇지도 않았다. 그저 근동에서 제일가는 이 덕쇠 할아버지네 호두를 어서 소녀에게 맛보여야 한다는 생각만이 앞섰다.
 그러다, 아차, 하는 생각이 들었다. 소녀더러 병이 좀 낫거들랑 이사 가기 전에 한번 개울가로 나와 달라는 말을 못 해 둔 것이었다. 바보 같은 것, 바보 같은 것.""",
@@ -151,14 +151,19 @@ QUESTIONS = [
     },
 ]
 
+# 세션 상태 초기화
 if "page" not in st.session_state:
-    st.session_state.page = "main"
+    st.session_state.page = "intro"
 if "current_q" not in st.session_state:
     st.session_state.current_q = None
 if "completed" not in st.session_state:
     st.session_state.completed = set()
 if "feedbacks" not in st.session_state:
     st.session_state.feedbacks = {}
+if "student_class" not in st.session_state:
+    st.session_state.student_class = None
+if "student_group" not in st.session_state:
+    st.session_state.student_group = None
 
 
 # ✅ Google Sheets 기록 함수
@@ -175,6 +180,8 @@ def log_to_sheets(question_label, student_answer, feedback):
         sheet = client.open("26년 용화중_상징적 의미 추론하기(소나기)").sheet1
         sheet.append_row([
             datetime.now().strftime("%Y-%m-%d %H:%M"),
+            st.session_state.student_class,
+            st.session_state.student_group,
             question_label,
             student_answer,
             feedback
@@ -183,9 +190,31 @@ def log_to_sheets(question_label, student_answer, feedback):
         pass  # 기록 실패해도 앱은 정상 작동
 
 
+# ✅ 시작 화면 (반/모둠 선택)
+def show_intro():
+    st.title("🌧️ 소나기 속 숨은 의미 찾기")
+    st.caption("시작하기 전에 반과 모둠을 선택해주세요!")
+    st.divider()
+
+    student_class = st.selectbox(
+        "📚 반을 선택하세요",
+        [f"{i}반" for i in range(1, 10)]
+    )
+    student_group = st.selectbox(
+        "👥 모둠을 선택하세요",
+        [f"{i}모둠" for i in range(1, 7)]
+    )
+
+    if st.button("시작하기 🌧️", type="primary", use_container_width=True):
+        st.session_state.student_class = student_class
+        st.session_state.student_group = student_group
+        st.session_state.page = "main"
+        st.rerun()
+
+
 def show_main():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
-    st.caption("소나기 속 장면들을 다시 읽고, 숨겨진 의미를 찾아보세요. 내 생각을 쓰면 인공지능 선생님이 함께 고민해드려요! 🌧️")
+    st.caption(f"📚 {st.session_state.student_class} | 👥 {st.session_state.student_group}")
     st.divider()
 
     completed_count = len(st.session_state.completed)
@@ -212,12 +241,14 @@ def show_main():
             st.session_state.page = "question"
             st.rerun()
 
+
 def show_question(q):
     if st.button("← 목록으로 돌아가기"):
         st.session_state.page = "main"
         st.rerun()
 
     st.divider()
+    st.caption(f"📚 {st.session_state.student_class} | 👥 {st.session_state.student_group}")
     st.markdown(f"### {q['label']} | {q['tag']}")
     st.markdown(f"**{q['question']}**")
     st.divider()
@@ -342,7 +373,11 @@ def show_question(q):
                 # ✅ Google Sheets에 기록
                 log_to_sheets(q["label"], answer, feedback)
 
-if st.session_state.page == "main":
+
+# 페이지 라우팅
+if st.session_state.page == "intro":
+    show_intro()
+elif st.session_state.page == "main":
     show_main()
 elif st.session_state.page == "question":
     q = next((q for q in QUESTIONS if q["id"] == st.session_state.current_q), None)
