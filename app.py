@@ -196,7 +196,6 @@ def get_feedback(q, answer):
         "Content-Type": "application/json"
     }
 
-    # ✅ 핵심 변경: 모델을 gemma2-9b-it로 교체 + 한국어 강제 지시 강화
     system_prompt = """너는 대한민국 중학교 1학년 국어 선생님이야.
 반드시 한국어(한글)로만 대답해야 해.
 중국어, 일본어, 영어 등 다른 언어는 단 한 글자도 절대 쓰면 안 돼.
@@ -220,18 +219,18 @@ def get_feedback(q, answer):
 - 힌트가 되는 지문: (다시 읽어볼 대사나 행동 인용)"""
 
     payload = {
-        "model": "gemma2-9b-it",  # ✅ 한국어 지시를 더 잘 따르는 모델로 교체
+        "model": "llama-3.1-8b-instant",  # ✅ 가장 빠른 모델로 교체
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt}
         ],
-        "max_tokens": 1000,
+        "max_tokens": 800,  # ✅ 토큰 줄여서 응답 속도 향상
         "temperature": 0.3
     }
 
     for attempt in range(3):
         try:
-            res = requests.post(url, headers=headers, json=payload)
+            res = requests.post(url, headers=headers, json=payload, timeout=25)  # ✅ 타임아웃 추가
             if res.status_code == 200:
                 data = res.json()
                 if "choices" in data:
@@ -243,7 +242,6 @@ def get_feedback(q, answer):
         except Exception as e:
             pass
     return None
-
 
 def show_intro():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
