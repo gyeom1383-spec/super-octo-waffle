@@ -170,10 +170,11 @@ def log_to_sheets(question_label, student_answer, feedback):
             continue
 
 
-# ✅ Gemini 2.5 Flash API 호출 함수
+# ✅ Gemini 2.5 Flash-lite API 호출 함수
 def get_feedback(q, answer):
     api_key = st.secrets["GEMINI_API_KEY"]
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={api_key}"
+    # ✅ 더 빠른 Flash-Lite 모델로 교체
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
 
     prompt = f"""너는 대한민국 중학교 1학년 국어 선생님이야.
@@ -200,14 +201,14 @@ def get_feedback(q, answer):
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "maxOutputTokens": 800,
+            "maxOutputTokens": 600,  # ✅ 토큰 더 줄여서 속도 향상
             "temperature": 0.3
         }
     }
 
     for attempt in range(3):
         try:
-            res = requests.post(url, headers=headers, json=payload, timeout=25)
+            res = requests.post(url, headers=headers, json=payload, timeout=20)  # ✅ timeout 20초로 단축
             if res.status_code == 200:
                 data = res.json()
                 return data["candidates"][0]["content"]["parts"][0]["text"]
@@ -220,7 +221,6 @@ def get_feedback(q, answer):
                 time.sleep(3)
             continue
     return None
-
 
 def show_intro():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
