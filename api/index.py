@@ -209,7 +209,7 @@ def feedback():
         return jsonify({"error": "문항을 찾을 수 없습니다."}), 404
 
     api_key = os.environ.get("GEMINI_API_KEY")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-05-20:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
 
     prompt = f"""너는 대한민국 중학교 1학년 국어 선생님이야.
