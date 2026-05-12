@@ -1,3 +1,6 @@
+import sys
+import os
+
 try:
     from flask import Flask, render_template, request, jsonify
     import requests
@@ -5,14 +8,19 @@ try:
     import gspread
     from google.oauth2.service_account import Credentials
     from datetime import datetime
-    import os
 except ImportError as e:
-    import sys
-    print(f"Import Error: {e}", file=sys.stderr)
-    raise
+    from flask import Flask
+    app = Flask(__name__)
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))
+    @app.route("/")
+    def error():
+        return f"Import 오류: {str(e)}", 500
+
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    app.template_folder = os.path.join(BASE_DIR, 'templates')
+else:
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))
 
 QUESTIONS = [
     {
