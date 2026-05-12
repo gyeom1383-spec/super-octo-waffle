@@ -6,7 +6,9 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime
 import os
 
-app = Flask(__name__, template_folder='../templates')
+# ✅ 경로 수정
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))
 
 QUESTIONS = [
     {
@@ -141,3 +143,50 @@ def feedback():
 
     q = next((q for q in QUESTIONS if q["id"] == q_id), None)
     if not q:
+        return jsonify({"error": "문항을 찾을 수 없습니다."}), 404
+
+    api_key = os.environ.get("GEMINI_API_KEY")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key={api_key}"
+    headers = {"Content-Type": "application/json"}
+
+    prompt = f"""너는 대한민국 중학교 1학년 국어 선생님이야.
+반드시 한국어(한글)로만 대답해야 해.
+중국어, 일본어, 영어 알파벳 등 다른 언어는 절대 쓰면 안 돼.
+
+[문제]: {q['question']}
+[정답 방향]: {q['key_answer']}
+[학생 답변]: {answer}
+
+아래 두 부분으로만 피드백을 작성해줘.
+
+[선생님의 다정한 피드백 💌]
+잘한 부분을 구체적으로 칭찬하고, 보완할 점을 지문 표현을 따옴표로 인용하며 힌트로 알려줘. 정답은 직접 말하지 마. 2~3문장.
+
+[한 걸음 더 나아가기 위한 나의 미션 🐾]
+- 내가 잘한 점:
+- 나의 다음 행동:
+- 힌트가 되는 지문:"""
+
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "maxOutputTokens": 600,
+            "temperature": 0.3
+        }
+    }
+
+    try:
+        res = requests.post(url, headers=headers, json=payload, timeout=55)
+        if res.status_code == 200:
+            result = res.json()
+            feedback_text = result["candidates"][0]["content"]["parts"][0]["text"]
+            log_to_sheets(student_class, student_group, q["label"], answer, feedback_text)
+            return jsonify({"feedback": feedback_text})
+        else:
+            return jsonify({"error": "API 오류가 발생했습니다."}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
