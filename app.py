@@ -83,12 +83,21 @@ QUESTIONS = [
 "하나두 버리지 말어."
 
 [관련 장면 — 지문2]
-소녀가 속삭이듯이, 이리 들어와 앉으라고 했다. 괜찮다고 했다. 소녀가 다시 들어와 앉으라고 했다. 할 수 없이 뒷걸음질을 쳤다. 그 바람에 소녀가 안고 있는 꽃묶음이 우그러들었다. 그러나 소녀는 상관없다고 생각했다.""",
+소녀가 속삭이듯이, 이리 들어와 앉으라고 했다. 괜찮다고 했다. 소녀가 다시 들어와 앉으라고 했다. 할 수 없이 뒷걸음질을 쳤다. 그 바람에 소녀가 안고 있는 꽃묶음이 우그러들었다. 그러나 소녀는 상관없다고 생각했다.
+
+[맥락]
+지문1의 꽃은 소년이 소녀에게 마음을 전하는 매개체이며, 지문2의 꽃묶음이 우그러지는 장면은 소나기라는 시련 속에서도 소녀가 소년과의 추억(꽃)보다 소년 자체를 더 소중히 여김을 보여줌.""",
         "excerpt": """[지문1]<br>
+소녀가 산을 향해 달려갔다. 이번은 소년이 뒤따라 달리지 않았다. 그러고도 곧 소녀보다 더 많은 꽃을 꺾었다.<br>
+"이게 들국화, 이게 싸리꽃, 이게 도라지꽃……."<br>
+"도라지꽃이 이렇게 예쁜 줄은 몰랐네. 난 보랏빛이 좋아! …… 근데 이 양산 같이 생긴 노란 꽃이 뭐지?"<br>
+"마타리꽃."<br>
+소녀는 마타리꽃을 양산 받듯이 해 보인다. 약간 상기된 얼굴에 살폿한 보조개를 떠올리며.<br>
 다시 소년은 꽃 한 옴큼을 꺾어 왔다. <u>ⓐ싱싱한 꽃가지만 골라 소녀에게 건넨다.</u><br>
 그러나 소녀는,<br>
 "하나두 버리지 말어."<br><br>
 [지문2]<br>
+수숫단 속은 비는 안 새었다. 그저 어둡고 좁은 게 안됐다. 앞에 나앉은 소년은 그냥 비를 맞아야만 했다. 그런 소년의 어깨에서 김이 올랐다.<br>
 소녀가 속삭이듯이, 이리 들어와 앉으라고 했다. 괜찮다고 했다. 소녀가 다시 들어와 앉으라고 했다. 할 수 없이 뒷걸음질을 쳤다. <u>ⓑ그 바람에 소녀가 안고 있는 꽃묶음이 우그러들었다.</u>""",
         "question": "지문1의 ⓐ와 지문2의 ⓑ의 의미를 비교하여 서술해 봅시다.",
         "hint": "[힌트 1] [지문1]은 교과서 32페이지, [지문2]는 36페이지를 확인하세요.\n[힌트 2] ⓐ(싱싱한 꽃)를 건네는 행동에는 소년의 어떤 마음이 담겨 있는지, ⓑ(우그러진 꽃)의 모습은 앞으로 두 사람에게 일어날 사건을 어떻게 미리 보여주는지 생각해 보세요.",
@@ -102,7 +111,10 @@ QUESTIONS = [
         "tag": "인물의 심리",
         "context": """[관련 장면]
 이날 밤, 소년은 몰래 덕쇠 할아버지네 호두밭으로 갔다.
-낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜩했다.""",
+낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜩했다. 그러나 다음 순간, 굵은 호두야 많이 떨어져라, 많이 떨어져라, 저도 모를 힘에 이끌려 마구 작대기를 내리치는 것이었다.
+돌아오는 길에는 열이틀 달이 지우는 그늘만 골라 짚었다. 그늘의 고마움을 처음 느꼈다.
+불룩한 주머니를 어루만졌다. 호두 송이를 맨손으로 깠다가는 옴이 오르기 쉽다는 말 같은 건 아무렇지도 않았다. 그저 근동에서 제일가는 이 덕쇠 할아버지네 호두를 어서 소녀에게 맛보여야 한다는 생각만이 앞섰다.
+그러다, 아차, 하는 생각이 들었다. 소녀더러 병이 좀 낫거들랑 이사 가기 전에 한번 개울가로 나와 달라는 말을 못 해 둔 것이었다. 바보 같은 것, 바보 같은 것.""",
         "excerpt": """이날 밤, 소년은 몰래 덕쇠 할아버지네 호두밭으로 갔다.<br>
 낮에 봐 두었던 나무로 올라갔다. 그리고 봐 두었던 가지를 향해 작대기를 내리쳤다. 호두 송이 떨어지는 소리가 별나게 크게 들렸다. 가슴이 선뜩했다. 그러나 다음 순간, 굵은 호두야 많이 떨어져라, 많이 떨어져라, 저도 모를 힘에 이끌려 마구 작대기를 내리치는 것이었다.<br>
 <u>돌아오는 길에는 열이틀 달이 지우는 그늘만 골라 짚었다. 그늘의 고마움을 처음 느꼈다.</u>""",
@@ -110,14 +122,25 @@ QUESTIONS = [
         "hint": "교과서 40페이지를 확인해보세요.",
         "placeholder": "소년이 그늘만 짚어 돌아온 것은 [이유]이기 때문이다.",
         "answer_frame": "소년이 그늘만 짚어 돌아온 것은 [이유]이기 때문이다.",
-        "key_answer": "소년은 덕쇠 할아버지네 호두밭에서 몰래 호두를 딴 것이므로 달빛에 들킬까 봐 그늘만 골라 걸어온 것임.",
+        "key_answer": "소년은 덕쇠 할아버지네 호두밭에서 몰래 호두를 딴 것이므로 달빛에 들킬까 봐 그늘만 골라 걸어온 것임. 소녀에게 호두를 주고 싶은 마음이 간절했지만 남의 밭에서 딴 것이기에 들키지 않으려는 조마조마한 심리가 담겨 있음.",
     },
     {
         "id": 6,
         "label": "모둠 문항 4번",
         "tag": "인물의 심리",
-        "context": """[결말 장면]
-"글쎄 말이지. 이번 앤 꽤 여러 날 앓는 걸 약두 변변히 못 써 봤다더군. 지금 같애서는 윤 초시네두 대가 끊긴 셈이지……. 그런데 참 이번 계집애는 어린것이 여간 잔망스럽지가 않어. 글쎄 죽기 전에 이런 말을 했다지 않어? 자기가 죽거든 자기 입던 옷을 꼭 그대루 입혀서 묻어 달라구……." """,
+        "context": """[관련 장면]
+소녀가 분홍 스웨터 앞자락을 내려다본다. 거기에 검붉은 진흙물 같은 게 들어 있었다.
+소녀가 가만히 보조개를 떠올리며,
+"이게 무슨 물 같니?"
+소년은 스웨터 앞자락만 바라다보고 있었다.
+"내 생각해 냈다. 그날 도랑 건널 때 네게 업힌 일 있지? 그때 네 등에서 옮은 물이다."
+소년은 얼굴이 확 달아오름을 느꼈다.
+
+[결말 장면]
+"글쎄 말이지. 이번 앤 꽤 여러 날 앓는 걸 약두 변변히 못 써 봤다더군. 지금 같애서는 윤 초시네두 대가 끊긴 셈이지……. 그런데 참 이번 계집애는 어린것이 여간 잔망스럽지가 않어. 글쎄 죽기 전에 이런 말을 했다지 않어? 자기가 죽거든 자기 입던 옷을 꼭 그대루 입혀서 묻어 달라구……."
+
+[맥락]
+소녀가 입던 분홍 스웨터에는 소년과 함께 소나기를 맞으며 도랑을 건널 때 묻은 흙탕물 얼룩이 남아 있음.""",
         "excerpt": """"글쎄 말이지. 이번 앤 꽤 여러 날 앓는 걸 약두 변변히 못 써 봤다더군. 지금 같애서는 윤 초시네두 대가 끊긴 셈이지……. 그런데 참 이번 계집애는 어린것이 여간 잔망스럽지가 않어. 글쎄 죽기 전에 이런 말을 했다지 않어? 자기가 죽거든 <u>자기 입던 옷을 꼭 그대루 입혀서 묻어 달라</u>구……." """,
         "question": "소녀가 입던 옷을 그대로 입혀서 묻어 달라고 한 이유를 작성해 봅시다.",
         "hint": "교과서 42페이지를 확인하세요.",
@@ -142,9 +165,8 @@ if "student_group" not in st.session_state:
     st.session_state.student_group = None
 
 
-# ✅ Google Sheets 기록 함수 (재시도 포함)
 def log_to_sheets(question_label, student_answer, feedback):
-    for attempt in range(3):
+    for attempt in range(3):  # 실패해도 3번 재시도
         try:
             creds = Credentials.from_service_account_info(
                 st.secrets["gcp_service_account"],
@@ -163,32 +185,33 @@ def log_to_sheets(question_label, student_answer, feedback):
                 student_answer,
                 feedback
             ])
-            break
+            break  # 성공하면 재시도 중단
         except Exception as e:
             if attempt < 2:
-                time.sleep(2)
+                time.sleep(2)  # 2초 후 재시도
             continue
 
-
-# ✅ Gemini 2.5 Flash-lite API 호출 함수
 def get_feedback(q, answer):
-    api_key = st.secrets["GEMINI_API_KEY"]
-    # ✅ 더 빠른 Flash-Lite 모델로 교체
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent?key={api_key}"
-    headers = {"Content-Type": "application/json"}
+    api_key = st.secrets["GROQ_API_KEY"]
+    url = "https://api.groq.com/openai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
 
-    prompt = f"""너는 대한민국 중학교 1학년 국어 선생님이야.
+    system_prompt = """너는 대한민국 중학교 1학년 국어 선생님이야.
 반드시 한국어(한글)로만 대답해야 해.
-중국어, 일본어, 영어 알파벳 등 다른 언어는 단 한 글자도 절대 쓰면 안 돼.
+중국어, 일본어, 영어 등 다른 언어는 단 한 글자도 절대 쓰면 안 돼.
+한글 자모(가나다라...)로만 구성된 문장으로만 답변해."""
 
-학생이 소설 「소나기」 문제에 답안을 작성했어. 아래 내용을 바탕으로 피드백을 써줘.
+    prompt = f"""학생이 소설 「소나기」 문제에 답안을 작성했어. 아래 내용을 바탕으로 피드백을 써줘.
 
 [문제]: {q['question']}
 [지문]: {q['excerpt']}
 [정답 방향]: {q['key_answer']}
 [학생 답변]: {answer}
 
-아래 두 부분으로만 피드백을 작성해줘.
+아래 두 부분으로만 피드백을 작성해줘. 반드시 한국어(한글)로만 써야 해.
 
 [선생님의 다정한 피드백 💌]
 학생 답변에서 잘한 부분을 구체적으로 칭찬하고, 보완할 점을 지문의 표현을 따옴표로 인용하면서 알려줘. 정답은 직접 알려주지 말고 스스로 생각할 수 있게 힌트만 줘. 2~3문장으로 써줘.
@@ -199,27 +222,28 @@ def get_feedback(q, answer):
 - 힌트가 되는 지문: (다시 읽어볼 대사나 행동 인용)"""
 
     payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "maxOutputTokens": 600,  # ✅ 토큰 더 줄여서 속도 향상
-            "temperature": 0.3
-        }
+        "model": "llama-3.1-8b-instant",  # ✅ 가장 빠른 모델로 교체
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+        ],
+        "max_tokens": 800,  # ✅ 토큰 줄여서 응답 속도 향상
+        "temperature": 0.3
     }
 
     for attempt in range(3):
         try:
-            res = requests.post(url, headers=headers, json=payload, timeout=20)  # ✅ timeout 20초로 단축
+            res = requests.post(url, headers=headers, json=payload, timeout=25)  # ✅ 타임아웃 추가
             if res.status_code == 200:
                 data = res.json()
-                return data["candidates"][0]["content"]["parts"][0]["text"]
+                if "choices" in data:
+                    return data["choices"][0]["message"]["content"]
             elif res.status_code in [503, 429]:
                 if attempt < 2:
                     time.sleep(3)
                     continue
         except Exception as e:
-            if attempt < 2:
-                time.sleep(3)
-            continue
+            pass
     return None
 
 def show_intro():
@@ -233,7 +257,7 @@ def show_intro():
     )
     student_group = st.selectbox(
         "👥 모둠을 선택하세요",
-        [f"{i}모둠" for i in range(1, 7)]
+        [f"{i}모둠" for i in range(1, 8)]
     )
 
     if st.button("시작하기 🌧️", type="primary", use_container_width=True):
