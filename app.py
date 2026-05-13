@@ -293,9 +293,9 @@ def show_question(q):
     # ✅ 이전 피드백은 text_area 아래에 표시
     prev_feedback = st.session_state.feedbacks.get(q["id"])
     if prev_feedback:
-        st.success("✅ 이전 피드백")
-        st.markdown(prev_feedback)
-        st.divider()
+        with st.container(border=True):
+            st.success("✅ 이전 피드백")
+            st.markdown(prev_feedback)
 
     # ✅ 버튼은 항상 answer 정의 이후
     if st.button("제출하기", type="primary", disabled=not answer.strip()):
@@ -312,7 +312,11 @@ def show_question(q):
         if full_text:
             st.session_state.feedbacks[q["id"]] = full_text
             st.session_state.completed.add(q["id"])
-            status_box.success("✅ 선생님의 피드백이 도착했습니다!")  # 로딩 → success로 교체 (위치 유지)
+            status_box.empty()                        # 로딩 메시지 제거
+            feedback_box.empty()                      # 스트리밍 텍스트 제거
+            with st.container(border=True):           # ✅ 박스 안에 함께 표시
+                st.success("✅ 선생님의 피드백이 도착했습니다!")
+                st.markdown(full_text)
             log_to_sheets(q["label"], answer, full_text)
         else:
             status_box.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
