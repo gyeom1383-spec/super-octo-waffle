@@ -186,7 +186,7 @@ def get_feedback_stream(q, answer):
                     {"role": "system", "content": system_prompt},
                     {"role": "user",   "content": prompt},
                 ],
-                max_tokens=600,
+                max_tokens=2000,
                 temperature=0.3,
                 stream=True,                        # ✅ 스트리밍 ON
                 timeout=60,                         # ✅ 타임아웃 60초로 확보
@@ -312,8 +312,7 @@ def show_question(q):
         if full_text:
             st.session_state.feedbacks[q["id"]] = full_text
             st.session_state.completed.add(q["id"])
-            status_box.empty()                        # 로딩 메시지 제거
-            st.success("✅ 선생님의 피드백이 도착했습니다!")  # 피드백 아래에 표시
+            status_box.success("✅ 선생님의 피드백이 도착했습니다!")  # 로딩 → success로 교체 (위치 유지)
             log_to_sheets(q["label"], answer, full_text)
         else:
             status_box.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
