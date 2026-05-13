@@ -3,6 +3,7 @@ import time
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from openai import OpenAI
 
 st.set_page_config(page_title="소나기 속 숨은 의미 찾기", page_icon="🌧️", layout="centered")
@@ -135,7 +136,7 @@ def log_to_sheets(question_label, student_answer, feedback):
             client = gspread.authorize(creds)
             sheet = client.open("26년 용화중_상징적 의미 추론하기(소나기)").sheet1
             sheet.append_row([
-                datetime.now().strftime("%Y-%m-%d %H:%M"),
+                datetime.now(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M"),
                 st.session_state.student_class,
                 st.session_state.student_group,
                 question_label,
