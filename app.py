@@ -302,8 +302,8 @@ def show_question(q):
         status_box = st.empty()
         status_box.info("인공지능 선생님이 꼼꼼하게 읽어보고 있어요... ✍️")
 
-        feedback_box = st.empty()
         full_text = ""
+        feedback_box = st.empty()
         for chunk in get_feedback_stream(q, answer):
             full_text += chunk
             feedback_box.markdown(full_text + "▌")   # 커서 효과
@@ -312,7 +312,8 @@ def show_question(q):
         if full_text:
             st.session_state.feedbacks[q["id"]] = full_text
             st.session_state.completed.add(q["id"])
-            status_box.success("✅ 선생님의 피드백이 도착했습니다!")  # info → success 교체
+            status_box.empty()                        # 로딩 메시지 제거
+            st.success("✅ 선생님의 피드백이 도착했습니다!")  # 피드백 아래에 표시
             log_to_sheets(q["label"], answer, full_text)
         else:
             status_box.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
