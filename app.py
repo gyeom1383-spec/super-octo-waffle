@@ -282,7 +282,7 @@ def show_question(q):
         unsafe_allow_html=True,
     )
 
-    prev_feedback = st.session_state.feedbacks.get(q["id"])
+    # ✅ answer 먼저 정의
     answer = st.text_area(
         "📝 내 답안",
         placeholder=q["placeholder"],
@@ -290,29 +290,33 @@ def show_question(q):
         key=f"answer_{q['id']}",
     )
 
+    # ✅ 이전 피드백은 text_area 아래에 표시
+    prev_feedback = st.session_state.feedbacks.get(q["id"])
     if prev_feedback:
         st.success("✅ 이전 피드백")
         st.markdown(prev_feedback)
         st.divider()
-    
-if st.button("제출하기", type="primary", disabled=not answer.strip()):
-    status_box = st.empty()
-    status_box.info("인공지능 선생님이 꼼꼼하게 읽어보고 있어요... ✍️")
 
-    feedback_box = st.empty()
-    full_text = ""
-    for chunk in get_feedback_stream(q, answer):
-        full_text += chunk
-        feedback_box.markdown(full_text + "▌")
-    feedback_box.markdown(full_text)
+    # ✅ 버튼은 항상 answer 정의 이후
+    if st.button("제출하기", type="primary", disabled=not answer.strip()):
+        status_box = st.empty()
+        status_box.info("인공지능 선생님이 꼼꼼하게 읽어보고 있어요... ✍️")
 
-    if full_text:
-        st.session_state.feedbacks[q["id"]] = full_text
-        st.session_state.completed.add(q["id"])
-        status_box.success("✅ 선생님의 피드백이 도착했습니다!")  # ← info를 success로 교체
-        log_to_sheets(q["label"], answer, full_text)
-    else:
-        status_box.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
+        feedback_box = st.empty()
+        full_text = ""
+        for chunk in get_feedback_stream(q, answer):
+            full_text += chunk
+            feedback_box.markdown(full_text + "▌")   # 커서 효과
+        feedback_box.markdown(full_text)              # 완료 후 커서 제거
+
+        if full_text:
+            st.session_state.feedbacks[q["id"]] = full_text
+            st.session_state.completed.add(q["id"])
+            status_box.success("✅ 선생님의 피드백이 도착했습니다!")  # info → success 교체
+            log_to_sheets(q["label"], answer, full_text)
+        else:
+            status_box.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
+
 
 # ── 라우팅 ───────────────────────────────────────────────
 if st.session_state.page == "intro":
