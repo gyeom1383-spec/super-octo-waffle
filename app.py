@@ -148,16 +148,15 @@ def log_to_sheets(question_label, student_answer, feedback):
                 time.sleep(2)
 
 
-# ── Gemini Flash 스트리밍 피드백 ─────────────────────────
+# ── Gemini Flash 스트리밍 피드백 (API 키 순환) ───────────
 def get_feedback_stream(q, answer):
     """
     Gemini 2.5 Flash (OpenAI-compatible endpoint) 로 스트리밍 피드백 생성.
-    generator를 반환 → st.write_stream() 에 바로 전달 가능.
+    API 키를 순환하여 한도 초과 시 다음 키로 자동 전환.
     """
-    client = OpenAI(
-        api_key=st.secrets["GEMINI_API_KEY"],
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
-    )
+    # secrets에 키가 여러 개(리스트) 또는 한 개(문자열) 모두 지원
+    raw = st.secrets["GEMINI_API_KEYS"]
+    api_keys = list(raw) if isinstance(raw, (list, tuple)) else [raw]
 
     system_prompt = (
         "당신은 중학교 국어 선생님입니다. "
@@ -178,20 +177,25 @@ def get_feedback_stream(q, answer):
 - 나의 다음 행동:
 - 힌트가 되는 지문:"""
 
-    for attempt in range(3):
+    # 키 수만큼 시도 (각 키당 최대 1회, 429 시 다음 키로 전환)
+    for attempt in range(len(api_keys)):
+        api_key = api_keys[attempt % len(api_keys)]  # 순환
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        )
         try:
             stream = client.chat.completions.create(
-                model="gemini-2.5-flash",          # ✅ Groq → Gemini Flash 교체
+                model="gemini-2.5-flash",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user",   "content": prompt},
                 ],
                 max_tokens=2000,
                 temperature=0.3,
-                stream=True,                        # ✅ 스트리밍 ON
-                timeout=60,                         # ✅ 타임아웃 60초로 확보
+                stream=True,
+                timeout=60,
             )
-            # chunk에서 텍스트만 yield
             for chunk in stream:
                 delta = chunk.choices[0].delta.content
                 if delta:
@@ -200,10 +204,14 @@ def get_feedback_stream(q, answer):
 
         except Exception as e:
             err = str(e)
-            if "429" in err and attempt < 2:        # RPM 초과 → 대기 후 재시도
-                wait = (attempt + 1) * 8
-                st.toast(f"잠시 대기 중... ({wait}초 후 재시도)", icon="⏳")
-                time.sleep(wait)
+            if "429" in err:
+                # 이 키 한도 초과 → 다음 키로 전환
+                remaining = len(api_keys) - attempt - 1
+                if remaining > 0:
+                    st.toast(f"키 #{attempt+1} 한도 초과, 다음 키로 전환 중...", icon="🔄")
+                else:
+                    st.error("모든 API 키의 한도가 초과되었습니다. 잠시 후 다시 시도해 주세요.")
+                    return
             else:
                 st.error(f"오류가 발생했습니다: {err}")
                 return
