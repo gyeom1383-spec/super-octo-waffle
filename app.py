@@ -1,10 +1,9 @@
 import streamlit as st
-import requests
 import time
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
-import json
+from openai import OpenAI
 
 st.set_page_config(page_title="소나기 속 숨은 의미 찾기", page_icon="🌧️", layout="centered")
 
@@ -107,6 +106,7 @@ QUESTIONS = [
     },
 ]
 
+# ── 세션 초기화 ──────────────────────────────────────────
 if "page" not in st.session_state:
     st.session_state.page = "intro"
 if "current_q" not in st.session_state:
@@ -121,6 +121,7 @@ if "student_group" not in st.session_state:
     st.session_state.student_group = None
 
 
+# ── Google Sheets 로깅 ───────────────────────────────────
 def log_to_sheets(question_label, student_answer, feedback):
     for attempt in range(3):
         try:
@@ -128,7 +129,7 @@ def log_to_sheets(question_label, student_answer, feedback):
                 st.secrets["gcp_service_account"],
                 scopes=[
                     "https://spreadsheets.google.com/feeds",
-                    "https://www.googleapis.com/auth/drive"
+                    "https://www.googleapis.com/auth/drive",
                 ]
             )
             client = gspread.authorize(creds)
@@ -139,27 +140,29 @@ def log_to_sheets(question_label, student_answer, feedback):
                 st.session_state.student_group,
                 question_label,
                 student_answer,
-                feedback
+                feedback,
             ])
             break
         except Exception:
             if attempt < 2:
                 time.sleep(2)
-            continue
 
 
-def get_feedback(q, answer):
-    api_key = st.secrets["GROQ_API_KEY"]
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
+# ── Gemini Flash 스트리밍 피드백 ─────────────────────────
+def get_feedback_stream(q, answer):
+    """
+    Gemini 2.5 Flash (OpenAI-compatible endpoint) 로 스트리밍 피드백 생성.
+    generator를 반환 → st.write_stream() 에 바로 전달 가능.
+    """
+    client = OpenAI(
+        api_key=st.secrets["GEMINI_API_KEY"],
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+    )
 
-    system_prompt = """You are a Korean middle school teacher.
-CRITICAL RULE: Your response must contain ONLY Korean Hangul characters (한글).
-NEVER use Chinese characters, Japanese characters, or English letters.
-Every single character in your response must be Korean Hangul or Korean punctuation."""
+    system_prompt = (
+        "당신은 중학교 국어 선생님입니다. "
+        "반드시 한글로만 답하고, 학생이 상처받지 않도록 다정하고 격려하는 말투를 사용하세요."
+    )
 
     prompt = f"""학생 답변에 한국어로만 피드백을 작성해줘.
 
@@ -175,47 +178,45 @@ Every single character in your response must be Korean Hangul or Korean punctuat
 - 나의 다음 행동:
 - 힌트가 되는 지문:"""
 
-    payload = {
-        "model": "llama-3.1-8b-instant",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt}
-        ],
-        "max_tokens": 500,
-        "temperature": 0
-    }
-
     for attempt in range(3):
         try:
-            res = requests.post(url, headers=headers, json=payload, timeout=15)
-            if res.status_code == 200:
-                data = res.json()
-                if "choices" in data:
-                    return data["choices"][0]["message"]["content"]
-            elif res.status_code in [503, 429]:
-                if attempt < 2:
-                    time.sleep(2)
-                    continue
-        except Exception:
-            if attempt < 2:
-                time.sleep(2)
-            continue
-    return None
+            stream = client.chat.completions.create(
+                model="gemini-2.5-flash",          # ✅ Groq → Gemini Flash 교체
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user",   "content": prompt},
+                ],
+                max_tokens=600,
+                temperature=0.3,
+                stream=True,                        # ✅ 스트리밍 ON
+                timeout=60,                         # ✅ 타임아웃 60초로 확보
+            )
+            # chunk에서 텍스트만 yield
+            for chunk in stream:
+                delta = chunk.choices[0].delta.content
+                if delta:
+                    yield delta
+            return  # 성공 시 종료
+
+        except Exception as e:
+            err = str(e)
+            if "429" in err and attempt < 2:        # RPM 초과 → 대기 후 재시도
+                wait = (attempt + 1) * 8
+                st.toast(f"잠시 대기 중... ({wait}초 후 재시도)", icon="⏳")
+                time.sleep(wait)
+            else:
+                st.error(f"오류가 발생했습니다: {err}")
+                return
 
 
+# ── 인트로 페이지 ────────────────────────────────────────
 def show_intro():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
     st.caption("시작하기 전에 반과 모둠을 선택해주세요!")
     st.divider()
 
-    student_class = st.selectbox(
-        "📚 반을 선택하세요",
-        [f"{i}반" for i in range(1, 10)]
-    )
-    student_group = st.selectbox(
-        "👥 모둠을 선택하세요",
-        [f"{i}모둠" for i in range(1, 8)]
-    )
+    student_class = st.selectbox("📚 반을 선택하세요", [f"{i}반" for i in range(1, 10)])
+    student_group = st.selectbox("👥 모둠을 선택하세요", [f"{i}모둠" for i in range(1, 8)])
 
     if st.button("시작하기 🌧️", type="primary", use_container_width=True):
         st.session_state.student_class = student_class
@@ -224,6 +225,7 @@ def show_intro():
         st.rerun()
 
 
+# ── 메인(문항 목록) 페이지 ───────────────────────────────
 def show_main():
     st.title("🌧️ 소나기 속 숨은 의미 찾기")
     st.caption(f"📚 {st.session_state.student_class} | 👥 {st.session_state.student_group}")
@@ -254,6 +256,7 @@ def show_main():
             st.rerun()
 
 
+# ── 문항 풀이 페이지 ─────────────────────────────────────
 def show_question(q):
     if st.button("← 목록으로 돌아가기"):
         st.session_state.page = "main"
@@ -267,31 +270,24 @@ def show_question(q):
 
     st.markdown(q["excerpt"], unsafe_allow_html=True)
 
-    hints = q['hint'].split('\n')
-    for h in hints:
+    for h in q["hint"].split("\n"):
         if h.strip():
             st.info(h.strip(), icon="💡")
 
     st.divider()
-
     st.markdown("**✏️ 답안 작성틀**")
     st.markdown(
-        f"""
-        <div style="font-size: 1rem; padding: 1rem; border-radius: 0.5rem; background-color: rgba(151, 166, 195, 0.15);">
-            {q['answer_frame']}
-        </div>
-        <br>
-        """,
-        unsafe_allow_html=True
+        f"""<div style="font-size:1rem;padding:1rem;border-radius:0.5rem;
+        background-color:rgba(151,166,195,0.15);">{q['answer_frame']}</div><br>""",
+        unsafe_allow_html=True,
     )
 
-    prev_feedback = st.session_state.feedbacks.get(q["id"], None)
-
+    prev_feedback = st.session_state.feedbacks.get(q["id"])
     answer = st.text_area(
         "📝 내 답안",
         placeholder=q["placeholder"],
         height=120,
-        key=f"answer_{q['id']}"
+        key=f"answer_{q['id']}",
     )
 
     if prev_feedback:
@@ -300,19 +296,26 @@ def show_question(q):
         st.divider()
 
     if st.button("제출하기", type="primary", disabled=not answer.strip()):
-        with st.spinner("인공지능 선생님이 꼼꼼하게 읽어보고 있어요..."):
-            feedback = get_feedback(q, answer)
+        st.info("인공지능 선생님이 꼼꼼하게 읽어보고 있어요... ✍️")
 
-            if feedback:
-                st.session_state.feedbacks[q["id"]] = feedback
-                st.session_state.completed.add(q["id"])
-                st.success("✅ 선생님의 피드백이 도착했습니다!")
-                st.markdown(feedback)
-                log_to_sheets(q["label"], answer, feedback)
-            else:
-                st.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
+        # ✅ 스트리밍으로 실시간 출력
+        feedback_box = st.empty()
+        full_text = ""
+        for chunk in get_feedback_stream(q, answer):
+            full_text += chunk
+            feedback_box.markdown(full_text + "▌")   # 커서 효과
+        feedback_box.markdown(full_text)              # 완료 후 커서 제거
+
+        if full_text:
+            st.session_state.feedbacks[q["id"]] = full_text
+            st.session_state.completed.add(q["id"])
+            st.success("✅ 선생님의 피드백이 도착했습니다!")
+            log_to_sheets(q["label"], answer, full_text)
+        else:
+            st.error("잠시 오류가 발생했습니다. 다시 시도해 주세요.")
 
 
+# ── 라우팅 ───────────────────────────────────────────────
 if st.session_state.page == "intro":
     show_intro()
 elif st.session_state.page == "main":
