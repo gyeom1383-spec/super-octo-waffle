@@ -155,7 +155,6 @@ def get_feedback_stream(q, answer):
     Gemini 2.5 Flash (OpenAI-compatible endpoint) 로 스트리밍 피드백 생성.
     API 키를 순환하여 한도 초과 시 다음 키로 자동 전환.
     """
-    # secrets에 키가 여러 개(리스트) 또는 한 개(문자열) 모두 지원
     raw = st.secrets["GEMINI_API_KEYS"]
     api_keys = list(raw) if isinstance(raw, (list, tuple)) else [raw]
 
@@ -166,21 +165,26 @@ def get_feedback_stream(q, answer):
 
     prompt = f"""학생 답변에 한국어로만 피드백을 작성해줘.
 
+[지문 원문]: {q['excerpt']}
 [문제]: {q['question']}
 [정답 방향]: {q['key_answer']}
 [학생 답변]: {answer}
 
+아래 규칙을 반드시 지켜줘:
+1. 학생의 이름을 절대 부르거나 지어서 부르지 마. 이름 없이 바로 피드백 내용만 작성해.
+2. 정답이나 핵심 개념을 직접적으로 알려주지 마. 정답에 해당하는 단어나 표현을 피드백 문장 안에 직접 쓰지 마.
+3. '힌트가 되는 지문' 항목에는 반드시 위의 [지문 원문]에 실제로 등장하는 문장을 글자 그대로 따옴표 안에 옮겨 적어. HTML 태그는 제거하고 순수 텍스트만 인용해. 절대 요약하거나 바꾸지 마.
+
 [선생님의 다정한 피드백 💌]
-잘한 부분을 구체적으로 칭찬하고, 보완할 점을 지문 표현을 따옴표로 인용하며 힌트로 알려줘. 정답은 직접 말하지 마. 2~3문장.
+잘한 부분을 구체적으로 칭찬하고, 보완할 점은 정답을 직접 말하지 말고 다시 생각해볼 방향만 부드럽게 안내해줘. 2~3문장.
 
 [한 걸음 더 나아가기 위한 나의 미션 🐾]
 - 내가 잘한 점:
 - 나의 다음 행동:
-- 힌트가 되는 지문:"""
+- 힌트가 되는 지문: (위 [지문 원문]에서 관련 문장을 HTML 태그 없이 글자 그대로 따옴표로 인용할 것)"""
 
-    # 키 수만큼 시도 (각 키당 최대 1회, 429 시 다음 키로 전환)
     for attempt in range(len(api_keys)):
-        api_key = api_keys[attempt % len(api_keys)]  # 순환
+        api_key = api_keys[attempt % len(api_keys)]
         client = OpenAI(
             api_key=api_key,
             base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
@@ -201,12 +205,11 @@ def get_feedback_stream(q, answer):
                 delta = chunk.choices[0].delta.content
                 if delta:
                     yield delta
-            return  # 성공 시 종료
+            return
 
         except Exception as e:
             err = str(e)
             if "429" in err:
-                # 이 키 한도 초과 → 다음 키로 전환
                 remaining = len(api_keys) - attempt - 1
                 if remaining > 0:
                     st.toast(f"키 #{attempt+1} 한도 초과, 다음 키로 전환 중...", icon="🔄")
@@ -291,7 +294,6 @@ def show_question(q):
         unsafe_allow_html=True,
     )
 
-    # ✅ answer 먼저 정의
     answer = st.text_area(
         "📝 내 답안",
         placeholder=q["placeholder"],
@@ -299,14 +301,12 @@ def show_question(q):
         key=f"answer_{q['id']}",
     )
 
-    # ✅ 이전 피드백은 text_area 아래에 표시
     prev_feedback = st.session_state.feedbacks.get(q["id"])
     if prev_feedback:
         with st.container(border=True):
             st.success("✅ 이전 피드백")
             st.markdown(prev_feedback)
 
-    # ✅ 버튼은 항상 answer 정의 이후
     if st.button("제출하기", type="primary", disabled=not answer.strip()):
         status_box = st.empty()
         status_box.info("인공지능 선생님이 꼼꼼하게 읽어보고 있어요... ✍️")
@@ -315,15 +315,15 @@ def show_question(q):
         feedback_box = st.empty()
         for chunk in get_feedback_stream(q, answer):
             full_text += chunk
-            feedback_box.markdown(full_text + "▌")   # 커서 효과
-        feedback_box.markdown(full_text)              # 완료 후 커서 제거
+            feedback_box.markdown(full_text + "▌")
+        feedback_box.markdown(full_text)
 
         if full_text:
             st.session_state.feedbacks[q["id"]] = full_text
             st.session_state.completed.add(q["id"])
-            status_box.empty()                        # 로딩 메시지 제거
-            feedback_box.empty()                      # 스트리밍 텍스트 제거
-            with st.container(border=True):           # ✅ 박스 안에 함께 표시
+            status_box.empty()
+            feedback_box.empty()
+            with st.container(border=True):
                 st.success("✅ 선생님의 피드백이 도착했습니다!")
                 st.markdown(full_text)
             log_to_sheets(q["label"], answer, full_text)
